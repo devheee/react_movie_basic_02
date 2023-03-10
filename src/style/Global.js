@@ -9,7 +9,6 @@ const Reset = createGlobalStyle`
     font-size: inherit;
     font-weight: inherit;
     color: inherit;
-    /* padding 과 border를 포함해서 박스 사이즈가 늘어나는 것을 박스 안쪽으로 가둔다. */
     box-sizing: border-box;
 }
 
@@ -19,8 +18,7 @@ const Reset = createGlobalStyle`
 }
 
 ul,
-ol,
-li {
+ol {
     list-style: none;
 }
 
