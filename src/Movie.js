@@ -380,8 +380,9 @@ const Movie = () => {
     const [search, setSearch] = useState([]);
     const [inputList, setInputList] = useState(null);
     const [input, setInput] = useState('');
+    const [load, setload] = useState(true);
     // const [genre, setGenre] = useState(GList[0]);
-    const [load, setload] = useState();
+
 
     const GList = [
         "Action",
@@ -418,10 +419,11 @@ const Movie = () => {
     const listtotal = Array.from({ length: parseInt(movieList.movie_count / limit) })
 
     const getMovie = async () => {
+        setload(true);
         const r = await axios.get(`https://yts.mx/api/v2/list_movies.json?limit=${limit}&page=${pageNum}`);
         setMovieList(r.data.data);
         setMovie(r.data.data.movies)
-        setload()
+        setload(false)
     }
 
     const searchMovie = async () => {
