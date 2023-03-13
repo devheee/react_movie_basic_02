@@ -386,7 +386,27 @@ const Movie = () => {
     const GList = [
         "Action",
         "Adventure",
-        "Animation"
+        "Animation",
+        "Biography",
+        "Comedy",
+        "Crime",
+        "Documentary",
+        "Drama",
+        "Family",
+        "Fantasy",
+        "Film Noir",
+        "History",
+        "Horror",
+        "Music",
+        "Musical",
+        "Mystery",
+        "Romance",
+        "Sci-Fi",
+        "Short Film",
+        "Sport",
+        "Thriller",
+        "War",
+        "Western"
     ]
 
     const MainSlide = useRef(null);
