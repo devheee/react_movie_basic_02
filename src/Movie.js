@@ -24,6 +24,8 @@ margin: 0 auto;
 
 const GridLayout = styled.ul`
 display: grid;
+/* mediaquery 없이 반응형 만들기 */
+/* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
 grid-template-columns: repeat(6, 1fr);
 gap: 10px;
 `
@@ -206,6 +208,38 @@ font-size: 13px;
 font-weight: 300;
 `
 
+const GenreMovieWrapper = styled.section`
+padding: 100px 0;
+
+`
+
+const GenreMovieTitle = styled.h2`
+font-size: 30px;
+font-weight: 700;
+color: #fff;
+
+width: 1600px;
+margin: 0 auto;
+`
+
+const Hr = styled.hr`
+width: 1600px;
+margin: 20px auto;
+`
+const Load = styled.div`
+position: fixed;
+inset: 0 0 0 0;
+height: 100vh;
+background: #333;
+color: rgba(255,255,255,0.5);
+
+font-size: 150px;
+
+display: flex;
+justify-content: center;
+align-items: center;
+`
+
 // style 끝
 
 
@@ -310,6 +344,30 @@ const SearchMovie = ({ search, on, setOn }) => {
     )
 }
 
+const GenreMovie = ({ genre }) => {
+    const [genreList, setGenreList] = useState([]);
+    const genreMovie = async () => {
+        const r = await axios.get(`https://yts.mx/api/v2/list_movies.json?genre=${genre}&limit=12`);
+        setGenreList(r.data.data.movies)
+    }
+    useEffect(() => {
+        genreMovie()
+    }, [])
+
+    return (
+        <GenreMovieWrapper>
+            <GenreMovieTitle>{genre}</GenreMovieTitle>
+            <Hr />
+            <Inner>
+                <GridLayout>
+                    {
+                        genreList.map(it => <li><img src={it.large_cover_image} alt="" /></li>)
+                    }
+                </GridLayout>
+            </Inner >
+        </GenreMovieWrapper>)
+}
+
 const Movie = () => {
     //영화 데이터 가져오기 = 데이터는 시간이 걸리는 일이므로 비동기식으로 처리
     //영화 데이터 그리기 = state(리액트가 그려줄 수 있게)
@@ -322,6 +380,14 @@ const Movie = () => {
     const [search, setSearch] = useState([]);
     const [inputList, setInputList] = useState(null);
     const [input, setInput] = useState('');
+    // const [genre, setGenre] = useState(GList[0]);
+    const [load, setload] = useState();
+
+    const GList = [
+        "Action",
+        "Adventure",
+        "Animation"
+    ]
 
     const MainSlide = useRef(null);
     const inputRef = useRef(null);
@@ -335,12 +401,14 @@ const Movie = () => {
         const r = await axios.get(`https://yts.mx/api/v2/list_movies.json?limit=${limit}&page=${pageNum}`);
         setMovieList(r.data.data);
         setMovie(r.data.data.movies)
+        setload()
     }
 
     const searchMovie = async () => {
         const r = await axios.get(`https://yts.mx/api/v2/list_movies.json?query_term=${inputList}`);
         setSearch(r.data.data.movies)
     }
+
 
     useEffect(() => {
         getMovie()
@@ -350,12 +418,17 @@ const Movie = () => {
         searchMovie()
     }, [inputList])
 
+    // useEffect(() => {
+    //     genreMovie()
+    // }, [genre])
 
-    { console.log(movie, movieList) }
+
+    // {console.log(movie, movieList)}
 
     const MainSlideOption = {
         slidesToShow: 7,
         arrows: false,
+        autoplay: true,
     }
 
     const searchHandler = e => {
@@ -367,13 +440,20 @@ const Movie = () => {
             return
         }
         setInputList(input);
-        console.log(inputList)
+        // console.log(inputList)
+    }
+
+    if (load) {
+        return <Load><i class="xi-spinner-1 xi-spin"></i></Load>
     }
     return (
+        // {
+        //     load && <Load><i class="xi-spinner-1 xi-spin"></i></Load>
+        // }
         <Wrapper>
             <CommonStyle />
             <Header>
-                <H1>hee's Movie</H1>
+                <H1> <a href="/react_movie_basic_02">hee's Movie</a></H1>
                 <MainTitle>It is a site that collects my favorite movies. Enjoy it.</MainTitle>
                 <form onSubmit={searchHandler}>
                     <Input
@@ -475,6 +555,12 @@ const Movie = () => {
                 </Inner>
 
             </MovieListWrapper>
+
+
+            {
+                GList.map((it, idx) => <GenreMovie genre={it} />)
+            }
+
         </Wrapper>
     )
 }
